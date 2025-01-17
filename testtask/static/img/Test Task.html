@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Title -->
+    <title>Test Task</title>
+
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/classy-nav.css">
+    <link rel="stylesheet" href="/static/css/animate.css">
+    <link rel="stylesheet" href="/static/css/owl.carousel.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+
+
+</head>
+<body>
+<div class="single-blog-wrapper section-padding-0-100">
+    <div class="container">
+        <div class="row">
+            <!-- ##### Post Content Area ##### -->
+            <div class="col-12 col-lg-9">
+                <!-- Comment Area Start -->
+
+                <div class="comment_area clearfix mt-70">
+                    <div class='col-15 col-lg-10 m-md-5'>
+                        <a href="?sort=author&order=asc">
+                            User Name
+                            
+                        </a>
+                        <a href="?sort=email&order=asc">
+                            E-mail
+                            
+                        </a>
+                        <a href="?sort=created&order=asc">
+                            Date Added
+                            
+                        </a>
+                    </div>
+                    <h5 class="title">Comments (0)</h5>
+                    
+                    <ul class="comments-list">
+                        
+                        
+                        
+                        <div id="preview-area"
+                             style="display: none; margin-top: 20px; border: 1px solid #ddd; padding: 10px;">
+                            <h3>Preview</h3>
+                            <p id="preview-username"></p>
+                            <p id="preview-email"></p>
+                            <p id="preview-content"></p>
+                        </div>
+                    </ul>
+                    <div class="pagination text-center">
+                        <span class="step-links">
+                            
+                            
+
+                            
+                        </span>
+                    </div>
+                </div>
+
+                <div class="post-a-comment-area mt-70">
+                    <h5>Leave a comment</h5>
+                    <form id="comment-form" action="/" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="VXUNzIpIHQlQqqgyqdI5tX5rmvVFeSxMsZxWAjOjBY34IgA84heD3vSjkeLUG68K">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="group">
+                                    <input type="text" name="username" placeholder="Your Name" class="form-control" maxlength="100" required aria-describedby="id_username_helptext" id="id_username">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="group">
+                                    <input type="email" name="email" placeholder="Your Email" class="form-control" maxlength="100" required aria-describedby="id_email_helptext" id="id_email">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group">
+                                    <textarea name="text" cols="40" rows="4" placeholder="Enter your comment" class="form-control" required aria-describedby="id_text_helptext" id="id_text">
+</textarea>
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group">
+                                    <input type="file" name="file" class="form-control" id="file-upload" name="file" accept=".jpg,.jpeg,.png,.gif,.txt" aria-describedby="id_file_helptext">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <div class="group">
+                                    <img src="/captcha/image/8264ac5fe631036de2b07f4a472bf2f29eb9dcab/" alt="captcha" class="captcha" />
+<input type="hidden" name="captcha_0" value="8264ac5fe631036de2b07f4a472bf2f29eb9dcab" required id="id_captcha_0" autocomplete="off"><input type="text" name="captcha_1" required id="id_captcha_1" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" id="preview-button" class="btn original-btn">Preview</button>
+                                <button type="submit" class="btn original-btn">Reply</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Reply Form -->
+                    <form id="reply-form" action="/" method="post" style="display: none;"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="VXUNzIpIHQlQqqgyqdI5tX5rmvVFeSxMsZxWAjOjBY34IgA84heD3vSjkeLUG68K">
+                        <input type="hidden" name="parent" id="parent-id" value="">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="group">
+                                    <input type="text" name="username" placeholder="Your Name" class="form-control" maxlength="100" required aria-describedby="id_username_helptext" id="id_username">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="group">
+                                    <input type="email" name="email" placeholder="Your Email" class="form-control" maxlength="100" required aria-describedby="id_email_helptext" id="id_email">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group">
+                                    <textarea name="text" cols="40" rows="4" placeholder="Enter your comment" class="form-control" required aria-describedby="id_text_helptext" id="id_text">
+</textarea>
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group">
+                                    <input type="file" name="file" class="form-control" id="file-upload" name="file" accept=".jpg,.jpeg,.png,.gif,.txt" aria-describedby="id_file_helptext">
+                                    <span class="highlight"></span>
+                                    <span class="bar"></span>
+                                </div>
+                            </div>
+                            <img src="/captcha/image/b47958d07471d8799f25facfede7c6205e5e6e0c/" alt="captcha" class="captcha" />
+<input type="hidden" name="captcha_0" value="b47958d07471d8799f25facfede7c6205e5e6e0c" required id="id_captcha_0" autocomplete="off"><input type="text" name="captcha_1" required id="id_captcha_1" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false">
+                            <div class="col-12">
+                                <button type="submit" class="btn original-btn">Reply</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="file-preview" style="display: none;">
+                        <img id="image-preview" src="" alt="Preview"
+                             style="max-width: 320px; max-height: 240px; display: none;">
+                        <p id="text-preview" style="display: none;"></p>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (Necessary for All JavaScript Plugins) -->
+<script src="/static/js/jquery/jquery-2.2.4.min.js"></script>
+<!-- Popper js -->
+<script src="/static/js/popper.min.js"></script>
+<!-- Bootstrap js -->
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- Plugins js -->
+<script src="/static/js/plugins.js"></script>
+<!-- Active js -->
+<script src="/static/js/active.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const replyLinks = document.querySelectorAll('.comment-reply');
+        const replyForm = document.getElementById('reply-form');
+        const parentInput = document.getElementById('parent-id');
+        let currentParentComment = null; // Хранит текущий комментарий, под которым отображается форма
+
+        replyLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                // Получаем ID комментария из атрибута data-comment-id
+                const commentId = this.getAttribute('data-comment-id');
+                const parentComment = this.closest('.comment-meta');
+
+                // Проверяем, отображена ли форма под этим комментарием
+                if (currentParentComment === parentComment) {
+                    // Если да, скрываем форму и очищаем значение
+                    replyForm.style.display = 'none';
+                    parentInput.value = '';
+                    currentParentComment = null;
+                } else {
+                    // Если нет, отображаем форму под текущим комментарием
+                    parentInput.value = commentId;
+                    parentComment.appendChild(replyForm);
+                    replyForm.style.display = 'block';
+                    currentParentComment = parentComment;
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.getElementById('file-upload');
+        const filePreview = document.getElementById('file-preview');
+        const imagePreview = document.getElementById('image-preview');
+        const textPreview = document.getElementById('text-preview');
+
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+
+            // Скрыть предыдущий предпросмотр
+            filePreview.style.display = 'none';
+            imagePreview.style.display = 'none';
+            textPreview.style.display = 'none';
+
+            if (!file) return;
+
+            // Проверка размера файла
+            if (file.size > 102400) { // 100 KB
+                alert('File size must be less than 100 KB.');
+                this.value = ''; // Сбрасываем файл
+                return;
+            }
+
+            const fileType = file.type;
+
+            // Обработка изображения
+            if (fileType.startsWith('image/')) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+
+                    img.onload = function () {
+                        // Проверяем размеры изображения
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > 320 || height > 240) {
+                            const ratio = Math.min(320 / width, 240 / height);
+                            width = Math.round(width * ratio);
+                            height = Math.round(height * ratio);
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Показываем уменьшенное изображение
+                        imagePreview.src = canvas.toDataURL(fileType);
+                        imagePreview.style.display = 'block';
+                        filePreview.style.display = 'block';
+                    };
+                };
+
+                reader.readAsDataURL(file);
+
+                // Обработка текстового файла
+            } else if (fileType === 'text/plain') {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    textPreview.textContent = e.target.result;
+                    textPreview.style.display = 'block';
+                    filePreview.style.display = 'block';
+                };
+
+                reader.readAsText(file);
+            } else {
+                alert('Invalid file type. Only JPG, PNG, GIF, and TXT files are allowed.');
+                this.value = ''; // Сбрасываем файл
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const previewButton = document.getElementById('preview-button');
+        const previewArea = document.getElementById('preview-area');
+        const previewUsername = document.getElementById('preview-username');
+        const previewEmail = document.getElementById('preview-email');
+        const previewContent = document.getElementById('preview-content');
+
+        previewButton.addEventListener('click', function () {
+            const formData = new FormData(document.getElementById('comment-form'));
+
+            // Отправка данных на сервер через AJAX
+            fetch("/preview/", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+
+                    previewUsername.textContent = `Username: ${data.username}`;
+                    previewEmail.textContent = `Email: ${data.email}`;
+                    previewContent.innerHTML = `Message: ${data.text}`;
+                    previewArea.style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

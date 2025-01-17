@@ -1,0 +1,28 @@
+{%load static%}
+<li class="single_comment_area">
+    <!-- Comment Content -->
+    <div class="comment-content d-flex">
+        <!-- Comment Author -->
+        <div class="comment-author">
+            <img src="{% static 'img/default-avatar.jpeg' %}" alt="default avatar">
+        </div>
+        <!-- Comment Meta -->
+        <div class="comment-meta">
+            <a href="#" class="post-date">{{ comment.created|date:"F d, Y" }}</a>
+            <p><a href="#" class="post-author">{{ comment.username }}</a></p>
+            <a class="post-date">{{ comment.email }}</a>
+            <br>
+            <p>{{ comment.text|safe }}</p>
+            <a href="javascript:void(0);" class="comment-reply" data-comment-id="{{ comment.id }}">Reply</a>
+        </div>
+    </div>
+    <!-- Child Comments -->
+    {% if comment.replies.all %}
+        <ul class="children">
+            {% for child in comment.replies.all %}
+                {% include "includes/comment_item.html" with comment=child %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</li>

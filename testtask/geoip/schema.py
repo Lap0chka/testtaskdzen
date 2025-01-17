@@ -1,0 +1,94 @@
+from typing import Optional, Any
+from graphene import ObjectType, String, Mutation, Field
+from geoip.utils import save_user_stat, get_user_stat
+
+
+class UserStatType(ObjectType):  # type: ignore
+    """
+    GraphQL type representing user statistics.
+    """
+
+    ip_address: Optional[str] = String()
+    country: Optional[str] = String()
+    language: Optional[str] = String()
+    timestamp: Optional[str] = String()
+
+
+class CreateUserStat(Mutation):  # type: ignore
+    """
+    Mutation to create a new user statistic entry.
+
+    Fields:
+        success (String): A message indicating success or failure.
+        user_stat (UserStatType): The created user statistic entry, if successful.
+    """
+
+    class Arguments:
+        ip_address: str = String(required=True)
+        language: str = String(required=True)
+
+    success: Optional[str] = String()
+    user_stat: Optional[UserStatType] = Field(lambda: UserStatType)
+
+    def mutate(self, info: Any, ip_address: str, language: str) -> "CreateUserStat":
+        """
+        Handles the mutation to create a new user statistic.
+
+        Args:
+            info (Any): The GraphQL execution context.
+            ip_address (str): The IP address of the user.
+            language (str): The preferred language of the user.
+
+        Returns:
+            CreateUserStat: The mutation result containing success message and created user statistic.
+        """
+        try:
+            result = save_user_stat(ip_address, language)
+            if result:
+                return CreateUserStat(
+                    success="User stat added", user_stat=UserStatType(**result)
+                )
+        except Exception as e:
+            # Log the error or handle it appropriately
+            print(f"Error saving user stat: {e}")
+        return CreateUserStat(success="Failed to add user stat", user_stat=None)
+
+
+class Query(ObjectType):  # type: ignore
+    """
+    Query for retrieving user statistics.
+    """
+
+    user_stat: Optional[UserStatType] = Field(
+        UserStatType,
+        ip_address=String(required=True),
+        description="Retrieve user statistics by IP address.",
+    )
+
+    def resolve_user_stat(self, info: Any, ip_address: str) -> Optional[UserStatType]:
+        """
+        Resolves user statistics for a given IP address.
+
+        Args:
+            info (Any): The GraphQL execution context.
+            ip_address (str): The IP address to query.
+
+        Returns:
+            Optional[UserStatType]: The user statistics or None if not found.
+        """
+        try:
+            result = get_user_stat(ip_address)
+            if result:
+                return UserStatType(**result)
+        except Exception as e:
+            # Log the error or handle it appropriately
+            print(f"Error retrieving user stat: {e}")
+        return None
+
+
+class RootMutation(ObjectType):  # type: ignore
+    """
+    Root mutation for the schema.
+    """
+
+    create_user_stat: Field = CreateUserStat.Field()

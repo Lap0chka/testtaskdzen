@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.9"
 
 volumes:
   postgres_data:
@@ -7,16 +7,16 @@ volumes:
 
 services:
   db:
-    image: postgres:13.0-alpine
-    container_name: shopexample-db
+    image: postgres:16.0
+    container_name: testtask-db
     env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
 
   backend:
-    build: ./shopexample
-    container_name: shopexample-backend
+    build: ./testtask
+    container_name: testtask-backend
     env_file: .env
     volumes:
       - static_data:/app/static
@@ -31,17 +31,16 @@ services:
     command: sh -c "python3 manage.py makemigrations &&
                     python3 manage.py migrate &&
                     python3 manage.py collectstatic --noinput &&
-                    gunicorn shopexample.wsgi:application --bind 0.0.0.0:8000 &&
-                    stripe listen --forward-to localhost:8000/payment/webhook-stripe/"
+                    gunicorn testtask.wsgi:application --bind 0.0.0.0:8000"
 
   redis:
     image: redis:7.2.3-alpine
-    container_name: shopexample-redis
+    container_name: testtask-redis
     restart: unless-stopped
 
   celery:
-    build: ./shopexample
-    container_name: shopexample-celery
+    build: ./testtask
+    container_name: testtask-celery
     env_file: .env
     depends_on:
       - db
@@ -49,11 +48,11 @@ services:
     volumes:
       - static_data:/app/static
     restart: always
-    command: celery -A shopexample worker --loglevel=info --beat
+    command: celery -A testtask worker --loglevel=info --beat
 
   nginx:
     image: nginx:latest
-    container_name: shopexample-nginx
+    container_name: testtask-nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - static_data:/app/static
