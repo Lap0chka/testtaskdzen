@@ -7,7 +7,7 @@ from .models import Comment
 from captcha.models import CaptchaStore
 
 
-class IndexViewTests(TestCase):
+class IndexViewTests(TestCase):  # type: ignore
     def setUp(self) -> None:
         """
         Set up test environment with a client, URL, and a parent comment.

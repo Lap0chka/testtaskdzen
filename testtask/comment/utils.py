@@ -1,8 +1,8 @@
-import uuid
-from typing import Optional
+from typing import Dict, Any
 
 import bleach
 from django.http import HttpResponse, HttpRequest
+from django.utils.timezone import now
 from django.utils.cache import patch_cache_control
 
 
@@ -47,33 +47,50 @@ def user_specific_cache_control(response: HttpResponse) -> HttpResponse:
     patch_cache_control(response, private=True)
     return response
 
-def check_session(request: HttpRequest, user_key: Optional[str]) -> bool:
+
+def comment_limit(request: HttpRequest) -> bool:
     """
-    Checks and updates the user session based on a user-specific key.
+    Limits the number of comments a user can make within a given time period.
+    If the limit is exceeded, the user is banned for 10 minutes.
 
     Args:
-        request (HttpRequest): The HTTP request object.
-        user_key (Optional[str]): The user key stored in the session.
+        request: The HTTP request object.
 
     Returns:
-        bool: False if the user key exceeds a threshold and the user is not authenticated, True otherwise.
+        bool: True if the user can comment, False if banned.
     """
-    try:
-        if user_key is None:
-            # Generate a new user key and initialize it with a counter value of 1
-            user_key = str(uuid.uuid4())
-            request.session['user_key'] = f'{user_key}1'
-        else:
-            # Extract the numeric value from the last character, increment it, and update the session
-            value = int(user_key[-1]) if user_key[-1].isdigit() else 0
-            value += 1
-            request.session['user_key'] = f'{user_key[:-1]}{value}'
+    COMMENT_LIMIT = 3
+    BAN_DURATION = 10 * 60  # 10 minutes
 
-        # Check if the key exceeds the threshold and the user is not authenticated
-        if int(request.session['user_key'][-1]) > 3 and not request.user.is_authenticated:
-            return False
-        return True
-    except Exception as e:
-        # Log the error (replace print with proper logging in production)
-        print(f"Error in check_session: {e}")
-        return False
+    # Get the client's IP address from the request
+    user_ip = getattr(request, 'ip_address', None)
+    if not user_ip:
+        raise ValueError("IP address not found. Ensure UserStatsMiddleware is properly configured.")
+
+    # Access session data
+    session = request.session
+    if 'comment_data' not in session:
+        session['comment_data'] = {}
+
+    user_data: Dict[str, Any] = session['comment_data'].get(user_ip, {'comments': 0, 'ban_until': None})
+
+    # Check if the user is currently banned
+    current_time = now().timestamp()
+    if user_data['ban_until'] and current_time < user_data['ban_until']:
+        return False  # User is banned
+
+    # Increment comment count
+    user_data['comments'] += 1
+
+    # If the user exceeds the comment limit, ban them
+    if user_data['comments'] > COMMENT_LIMIT:
+        user_data['ban_until'] = current_time + BAN_DURATION
+        user_data['comments'] = 0  # Reset comment counter after banning
+        session['comment_data'][user_ip] = user_data
+        session.save()
+        return False   # User is now banned
+
+    # Save updated user data to session
+    session['comment_data'][user_ip] = user_data
+    session.save()
+    return True   # User is allowed to comment

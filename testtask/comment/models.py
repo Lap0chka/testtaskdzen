@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import QuerySet
 
 
-class ApprovedManager(models.Manager):
+class ApprovedManager(models.Manager):  # type: ignore
     """
     Custom manager to retrieve only approved objects.
     """
@@ -22,7 +22,7 @@ class ApprovedManager(models.Manager):
         return super().get_queryset().filter(is_approved=True)
 
 
-class Comment(models.Model):
+class Comment(models.Model):  # type: ignore
     """
     Model representing a comment with optional file attachments and nested replies.
     """

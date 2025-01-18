@@ -4,7 +4,7 @@ from graphene_django.views import GraphQLView
 from utils import redis_client
 
 
-class CustomGraphQLView(GraphQLView):
+class CustomGraphQLView(GraphQLView):  # type: ignore
     """
     Custom GraphQLView with additional logging of user IP and language to Redis.
     """

@@ -1,5 +1,5 @@
 import logging
-import uuid
+from typing import Any, Dict
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
@@ -14,23 +14,22 @@ from django.views.generic.list import ListView
 from .form import CommentForm
 from .models import Comment
 from .task import send_comment_notification
-from .utils import clean_html, check_session
+from .utils import clean_html, comment_limit
 
 logger = logging.getLogger(__name__)
 
 
 @method_decorator(never_cache, name="dispatch")
-class CommentListView(ListView):
+class CommentListView(ListView):  # type: ignore
     """
     View for displaying a list of comments and handling comment submissions.
     """
-
     model = Comment
     template_name = "base.html"
     context_object_name = "comments"
     paginate_by = 25
 
-    def get_queryset(self) -> Comment.objects.none() | Comment.objects.all():
+    def get_queryset(self) -> Comment.objects.none[...] | Comment.objects.all[...]:
         """
         Fetches the queryset of approved parent comments with prefetching for replies.
 
@@ -51,7 +50,6 @@ class CommentListView(ListView):
                 if order == "desc":
                     sort_by = f"-{sort_by}"
                 queryset = queryset.order_by(sort_by)
-
             return queryset
         except Exception as e:
             logger.error(
@@ -59,7 +57,7 @@ class CommentListView(ListView):
             )
             return Comment.objects.none()
 
-    def get_context_data(self, **kwargs) -> dict:
+    def get_context_data(self, **kwargs: Any) -> Dict[Any, Any]:
         """
         Adds the comment form to the context.
 
@@ -67,13 +65,15 @@ class CommentListView(ListView):
             **kwargs: Additional keyword arguments for the context.
 
         Returns:
-            dict: The updated context with the comment form included.
+            Dict[Any, Any]: The updated context with the comment form included.
         """
-        context = super().get_context_data(**kwargs)
+        context: Dict[Any, Any] = super().get_context_data(**kwargs)
         context["form"] = CommentForm()
+        context["current_sort"] = self.request.GET.get("sort", "created")
+        context["current_order"] = self.request.GET.get("order", "asc")
         return context
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """
         Handles the submission of a new comment.
 
@@ -86,10 +86,11 @@ class CommentListView(ListView):
         form = CommentForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-
-                user_key = request.COOKIES.get('user_key')
-                if not check_session(request, user_key):
-                    messages.error(request, "You cant add more comments.Try latter")
+                if not request.user.is_authenticated and not comment_limit(request):
+                    messages.error(
+                        request,
+                        "You cant add more comments.Try latter after 10 minutes"
+                    )
                     return redirect(reverse("index"))
                 # Create a new comment object but don't save it yet
                 comment = form.save(commit=False)
@@ -130,7 +131,7 @@ class CommentListView(ListView):
         return redirect(reverse("index"))
 
 
-@csrf_exempt
+@csrf_exempt  # type: ignore
 def preview_message(request: HttpRequest) -> HttpResponse:
     """
     Handles the preview of a comment message.

@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 
 from comment.models import Comment
 
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(admin.ModelAdmin):   # type: ignore
     """
     Admin configuration for the Comment model.
     """
@@ -23,16 +25,16 @@ class CommentAdmin(admin.ModelAdmin):
     raw_id_fields = ("parent",)
     actions = ["approve_comments"]
 
-    def text_snippet(self, obj):
+    def text_snippet(self, obj: Comment) -> str:
         """
         Returns a truncated snippet of the comment text.
         """
-        return obj.text[:50] + ("..." if len(obj.text) > 50 else "")
+        return obj.text[:50] + ("..." if len(obj.text) > 50 else "")  # type: ignore
 
-    text_snippet.short_description = "Comment Snippet"
+    text_snippet.short_description = "Comment Snippet"   # type: ignore
 
-    @admin.action(description="Approve selected comments")
-    def approve_comments(self, request, queryset):
+    @admin.action(description="Approve selected comments")   # type: ignore
+    def approve_comments(self, request: HttpRequest, queryset: QuerySet[Comment]) -> None:
         """
         Custom action to mark selected comments as approved.
         """

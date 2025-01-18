@@ -21,7 +21,7 @@ class UserStatsMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         """
-        Processes the request to save user statistics.
+        Processes the request to save user statistics and attaches IP to the request object.
 
         Args:
             request: The HTTP request object.
@@ -30,11 +30,14 @@ class UserStatsMiddleware:
             HttpResponse: The HTTP response object.
         """
         try:
+            # Get the client IP address
             ip = self.get_client_ip(request)
             if ip:
-                language = request.headers.get("Accept-Language", "Unknown").split(",")[
-                    0
-                ]
+                # Attach IP address to the request object
+                request.ip_address = ip
+
+                # Get the user's preferred language
+                language = request.headers.get("Accept-Language", "Unknown").split(",")[0]
 
                 # Save user statistics using the external utility
                 save_user_stat(ip, language)
@@ -47,7 +50,7 @@ class UserStatsMiddleware:
         return response
 
     @staticmethod
-    def get_client_ip(request: HttpRequest) -> Optional[str] | None:
+    def get_client_ip(request: HttpRequest) -> Optional[str]:
         """
         Retrieves the client's IP address from the HTTP request.
 

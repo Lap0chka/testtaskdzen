@@ -4,7 +4,7 @@ from django import forms
 from .models import Comment
 
 
-class CommentForm(forms.ModelForm):
+class CommentForm(forms.ModelForm):  # type: ignore
     """
     Form for creating and submitting comments, including CAPTCHA validation.
     """

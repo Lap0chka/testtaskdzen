@@ -10,7 +10,7 @@ from testtask import settings
 logger = logging.getLogger(__name__)
 
 
-@shared_task
+@shared_task  # type: ignore
 def send_comment_notification(username: str, text: str) -> bool:
     """
     Sends an email notification when a new comment is added.

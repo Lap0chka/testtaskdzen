@@ -1,62 +1,41 @@
-version: "3.9"
-
-volumes:
-  postgres_data:
-  static_data:
-  media_data:
-
 services:
+
   db:
-    image: postgres:16.0
-    container_name: testtask-db
-    env_file: .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    image: postgres:14.5
     restart: always
-
-  backend:
-    build: ./testtask
-    container_name: testtask-backend
-    env_file: .env
     volumes:
-      - static_data:/app/static
-      - media_data:/app/media
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+    - POSTGRES_DB=postgres
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+
+  cache:
+    image: redis:7.0.4
+    restart: always
+    volumes:
+      - ./data/cache:/data
+
+  web:
+    build: .
+    command: [ "./wait-for-it.sh", "db:5432", "--",
+               "uwsgi", "--ini", "/code/config/uwsgi/uwsgi.ini" ]
+    restart: always
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=myshop.settings.prod
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     depends_on:
       - db
-    ports:
-      - 8000:8000
-    links:
-      - db
-    restart: always
-    command: sh -c "python3 manage.py makemigrations &&
-                    python3 manage.py migrate &&
-                    python3 manage.py collectstatic --noinput &&
-                    gunicorn testtask.wsgi:application --bind 0.0.0.0:8000"
-
-  redis:
-    image: redis:7.2.3-alpine
-    container_name: testtask-redis
-    restart: unless-stopped
-
-  celery:
-    build: ./testtask
-    container_name: testtask-celery
-    env_file: .env
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - static_data:/app/static
-    restart: always
-    command: celery -A testtask worker --loglevel=info --beat
 
   nginx:
-    image: nginx:latest
-    container_name: testtask-nginx
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - static_data:/app/static
-      - media_data:/app/media
-    ports:
-      - 80:80
+    image: nginx:1.23.1
     restart: always
+    volumes:
+      - ./config/nginx:/etc/nginx/templates
+      - .:/code
+    ports:
+      - "80:80"

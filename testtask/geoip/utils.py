@@ -2,7 +2,7 @@ import redis
 from django.conf import settings
 from geoip2.database import Reader
 from django.utils.timezone import now
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 
 # Initialize Redis client
 redis_client = redis.StrictRedis(host="localhost", port=6379, db=0)
@@ -18,14 +18,9 @@ def get_country_from_ip(ip: str) -> str:
     Returns:
         str: The country name associated with the IP address, or "Unknown" if lookup fails.
     """
-    try:
-        reader = Reader(settings.GEOIP_PATH)
-        response = reader.city(ip)
-        return response.country.name
-    except Exception as e:
-        # Log error (you can replace print with a proper logger)
-        print(f"Error in get_country_from_ip: {e}")
-        return "Unknown"
+    reader = Reader(settings.GEOIP_PATH)
+    response = reader.city(ip)
+    return response.country.name or "Unknown"
 
 
 def save_user_stat(ip: str, language: str) -> Optional[Dict[str, str]]:
@@ -67,7 +62,7 @@ def save_user_stat(ip: str, language: str) -> Optional[Dict[str, str]]:
         return None
 
 
-def get_user_stat(ip: str) -> Optional[dict]:
+def get_user_stat(ip: str) -> Optional[Dict[str, Any]]:
     """
     Retrieve user statistics from Redis by IP address.
 
@@ -76,25 +71,31 @@ def get_user_stat(ip: str) -> Optional[dict]:
 
     Returns:
         Optional[Dict[str, str]]: A dictionary containing the user statistics,
-                                  or None if the data is not found.
+                                  or None if the data is not found or an error occurs.
     """
     try:
-        # Ensure we await the hgetall method if it is asynchronous
+        # Fetch user data from Redis
         data = redis_client.hgetall(f"user_stat:{ip}")
 
         if not data:
             return None
 
+        # Safely decode Redis byte values
         def safe_decode(value: Optional[bytes]) -> Optional[str]:
-            return value.decode() if value else None
+            return value.decode('utf-8') if value else None
 
+        # Return decoded user statistics
         return {
-            "ip_address": safe_decode(data.get(b"ip_address")),
-            "country": safe_decode(data.get(b"country")),
-            "language": safe_decode(data.get(b"language")),
-            "timestamp": safe_decode(data.get(b"timestamp")),
+            "ip_address": safe_decode(data.get(b"ip_address")),  # type: ignore
+            "country": safe_decode(data.get(b"country")),  # type: ignore
+            "language": safe_decode(data.get(b"language")),  # type: ignore
+            "timestamp": safe_decode(data.get(b"timestamp")),  # type: ignore
         }
     except redis.ConnectionError as e:
         # Log Redis connection error
         print(f"Redis Connection Error: {e}")
+        return None
+    except Exception as e:
+        # Log any unexpected exceptions
+        print(f"Unexpected Error in get_user_stat: {e}")
         return None
