@@ -6,7 +6,7 @@ from comment.models import Comment
 
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):   # type: ignore
+class CommentAdmin(admin.ModelAdmin):  # type: ignore
     """
     Admin configuration for the Comment model.
     """
@@ -31,9 +31,9 @@ class CommentAdmin(admin.ModelAdmin):   # type: ignore
         """
         return obj.text[:50] + ("..." if len(obj.text) > 50 else "")  # type: ignore
 
-    text_snippet.short_description = "Comment Snippet"   # type: ignore
+    text_snippet.short_description = "Comment Snippet"  # type: ignore
 
-    @admin.action(description="Approve selected comments")   # type: ignore
+    @admin.action(description="Approve selected comments")  # type: ignore
     def approve_comments(self, request: HttpRequest, queryset: QuerySet[Comment]) -> None:
         """
         Custom action to mark selected comments as approved.

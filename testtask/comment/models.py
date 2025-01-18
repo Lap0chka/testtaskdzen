@@ -1,6 +1,5 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
-
 from django.db.models import QuerySet
 
 
@@ -30,15 +29,11 @@ class Comment(models.Model):  # type: ignore
     username = models.CharField(
         max_length=100, help_text="The name of the user who posted the comment."
     )
-    email = models.EmailField(
-        max_length=100, help_text="The email address of the user."
-    )
+    email = models.EmailField(max_length=100, help_text="The email address of the user.")
     text = models.TextField(help_text="The content of the comment.")
     file = models.FileField(
         upload_to="comments/",
-        validators=[
-            FileExtensionValidator(allowed_extensions=["txt", "jpg", "png", "gif"])
-        ],
+        validators=[FileExtensionValidator(allowed_extensions=["txt", "jpg", "png", "gif"])],
         null=True,
         blank=True,
         help_text="Optional file attachment. Allowed formats: txt, jpg, png, gif.",

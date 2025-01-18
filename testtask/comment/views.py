@@ -1,10 +1,10 @@
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
@@ -24,12 +24,13 @@ class CommentListView(ListView):  # type: ignore
     """
     View for displaying a list of comments and handling comment submissions.
     """
+
     model = Comment
     template_name = "base.html"
     context_object_name = "comments"
     paginate_by = 25
 
-    def get_queryset(self) -> Comment.objects.none[...] | Comment.objects.all[...]:
+    def get_queryset(self) -> Union[QuerySet[Comment], QuerySet[None]]:
         """
         Fetches the queryset of approved parent comments with prefetching for replies.
 
@@ -37,9 +38,7 @@ class CommentListView(ListView):  # type: ignore
             QuerySet: A queryset of approved parent comments with sorting applied.
         """
         try:
-            queryset = Comment.approved.filter(parent__isnull=True).prefetch_related(
-                "replies"
-            )
+            queryset = Comment.approved.filter(parent__isnull=True).prefetch_related("replies")
             logger.info("Fetched %d approved comments.", queryset.count())
 
             # Sorting logic
@@ -52,9 +51,7 @@ class CommentListView(ListView):  # type: ignore
                 queryset = queryset.order_by(sort_by)
             return queryset
         except Exception as e:
-            logger.error(
-                "An error occurred while fetching comments: %s", str(e), exc_info=True
-            )
+            logger.error("An error occurred while fetching comments: %s", str(e), exc_info=True)
             return Comment.objects.none()
 
     def get_context_data(self, **kwargs: Any) -> Dict[Any, Any]:
@@ -88,15 +85,12 @@ class CommentListView(ListView):  # type: ignore
             try:
                 if not request.user.is_authenticated and not comment_limit(request):
                     messages.error(
-                        request,
-                        "You cant add more comments.Try latter after 10 minutes"
+                        request, "You cant add more comments.Try latter after 10 minutes"
                     )
                     return redirect(reverse("index"))
                 # Create a new comment object but don't save it yet
                 comment = form.save(commit=False)
-                comment.is_approved = (
-                    True  # Automatically approve the comment (if required)
-                )
+                comment.is_approved = True  # Automatically approve the comment (if required)
                 cleaned_content = clean_html(form.cleaned_data["text"])
                 comment.text = cleaned_content
                 # Handle parent comment linking
@@ -104,9 +98,7 @@ class CommentListView(ListView):  # type: ignore
                 if parent_id:
                     parent_comment = get_object_or_404(Comment, pk=parent_id)
                     comment.parent = parent_comment
-                    logger.info(
-                        "Linked the new comment to parent comment ID: %d", parent_id
-                    )
+                    logger.info("Linked the new comment to parent comment ID: %d", parent_id)
 
                 # Save the comment and display success message
                 comment.save()

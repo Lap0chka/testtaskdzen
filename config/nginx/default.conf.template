@@ -1,11 +1,11 @@
 # upstream for uWSGI
 upstream uwsgi_app {
-    server unix:/code/myshop/uwsgi_app.sock;
+    server unix:/code/testtask/uwsgi_app.sock;
 }
 
 server {
     listen 80;
-    server_name www.less-than-ten.com less-than-ten.com;
+    server_name www.testtask.com testtask.com;
     error_log stderr warn;
     access_log /dev/stdout main;
 
@@ -15,10 +15,10 @@ server {
     }
 
     location /static/ {
-        alias /code/myshop/static/;
+        alias /code/testtask/static/;
     }
     location /media/ {
-        alias /code/myshop/media/;
+        alias /code/testtask/media/;
     }
 }
 

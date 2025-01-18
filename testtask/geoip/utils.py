@@ -1,8 +1,9 @@
+from typing import Any, Dict, Optional
+
 import redis
 from django.conf import settings
-from geoip2.database import Reader
 from django.utils.timezone import now
-from typing import Optional, Dict, Any
+from geoip2.database import Reader
 
 # Initialize Redis client
 redis_client = redis.StrictRedis(host="localhost", port=6379, db=0)
@@ -82,7 +83,7 @@ def get_user_stat(ip: str) -> Optional[Dict[str, Any]]:
 
         # Safely decode Redis byte values
         def safe_decode(value: Optional[bytes]) -> Optional[str]:
-            return value.decode('utf-8') if value else None
+            return value.decode("utf-8") if value else None
 
         # Return decoded user statistics
         return {

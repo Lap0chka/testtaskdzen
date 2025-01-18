@@ -1,8 +1,7 @@
+import logging
 from typing import List
 
 from celery import shared_task
-import logging
-
 from django.core.mail import send_mail
 
 from testtask import settings

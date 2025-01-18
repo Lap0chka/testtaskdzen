@@ -1,10 +1,10 @@
+from captcha.models import CaptchaStore
 from django.contrib.messages import get_messages
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from .form import CommentForm
 from .models import Comment
-from captcha.models import CaptchaStore
 
 
 class IndexViewTests(TestCase):  # type: ignore
@@ -81,9 +81,7 @@ class IndexViewTests(TestCase):  # type: ignore
         self.assertEqual(Comment.objects.count(), 1)
 
         messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(
-            any("This field is required." in str(message) for message in messages)
-        )
+        self.assertTrue(any("This field is required." in str(message) for message in messages))
 
     def test_parent_comment_linking(self) -> None:
         """

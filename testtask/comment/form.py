@@ -15,9 +15,7 @@ class CommentForm(forms.ModelForm):  # type: ignore
         help_text="ID of the parent comment, used for replies.",
     )
 
-    captcha = CaptchaField(
-        help_text="Please complete the CAPTCHA to submit your comment."
-    )
+    captcha = CaptchaField(help_text="Please complete the CAPTCHA to submit your comment.")
 
     class Meta:
         model = Comment
@@ -33,9 +31,7 @@ class CommentForm(forms.ModelForm):  # type: ignore
             "username": forms.TextInput(
                 attrs={"placeholder": "Your Name", "class": "form-control"}
             ),
-            "email": forms.EmailInput(
-                attrs={"placeholder": "Your Email", "class": "form-control"}
-            ),
+            "email": forms.EmailInput(attrs={"placeholder": "Your Email", "class": "form-control"}),
             "file": forms.ClearableFileInput(
                 attrs={
                     "class": "form-control",
@@ -54,9 +50,7 @@ class CommentForm(forms.ModelForm):  # type: ignore
         """
         text: str = self.cleaned_data.get("text", "").strip()
         if len(text) < 5:
-            raise forms.ValidationError(
-                "The comment is too short. Please provide more details."
-            )
+            raise forms.ValidationError("The comment is too short. Please provide more details.")
         return text
 
     def clean_email(self) -> str:
@@ -76,7 +70,5 @@ class CommentForm(forms.ModelForm):  # type: ignore
         """
         username: str = self.cleaned_data.get("username", "").strip()
         if len(username) < 2:
-            raise forms.ValidationError(
-                "The username must be at least 2 characters long."
-            )
+            raise forms.ValidationError("The username must be at least 2 characters long.")
         return username

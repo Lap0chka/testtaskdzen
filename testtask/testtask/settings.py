@@ -190,7 +190,7 @@ LOGGING = {
 }
 
 # Celery
-CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/'
+CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672/"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 # Message
 

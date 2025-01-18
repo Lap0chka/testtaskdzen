@@ -1,18 +1,32 @@
-services:
+version: '3.9'
 
+services:
   db:
     image: postgres:14.5
     restart: always
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
-    - POSTGRES_DB=postgres
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
-  cache:
-    image: redis:7.0.4
+  rabbitmq:
+    image: rabbitmq:3-management
     restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  redis:
+    image: redis:7.2.3-alpine
+    container_name: testtask-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
     volumes:
       - ./data/cache:/data
 
@@ -24,12 +38,33 @@ services:
     volumes:
       - .:/code
     environment:
-      - DJANGO_SETTINGS_MODULE=myshop.settings.prod
+      - PYTHONPATH=/code
+      - DJANGO_SETTINGS_MODULE=testtask.settings
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
+      - rabbitmq
+      - redis
+
+  celery:
+    build: .
+    container_name: testtask-celery
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+    restart: always
+    command: celery -A testtask worker --loglevel=info
+    environment:
+      - PYTHONPATH=/code/testtask
+      - DJANGO_SETTINGS_MODULE=testtask.settings
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+      - REDIS_URL=redis://redis:6379/0
 
   nginx:
     image: nginx:1.23.1

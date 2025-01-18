@@ -1,6 +1,8 @@
-from typing import Optional, Any
-from graphene import ObjectType, String, Mutation, Field
-from geoip.utils import save_user_stat, get_user_stat
+from typing import Any, Optional
+
+from graphene import Field, Mutation, ObjectType, String
+
+from geoip.utils import get_user_stat, save_user_stat
 
 
 class UserStatType(ObjectType):  # type: ignore
@@ -45,9 +47,7 @@ class CreateUserStat(Mutation):  # type: ignore
         try:
             result = save_user_stat(ip_address, language)
             if result:
-                return CreateUserStat(
-                    success="User stat added", user_stat=UserStatType(**result)
-                )
+                return CreateUserStat(success="User stat added", user_stat=UserStatType(**result))
         except Exception as e:
             # Log the error or handle it appropriately
             print(f"Error saving user stat: {e}")
