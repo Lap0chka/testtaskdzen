@@ -70,26 +70,46 @@ cd project
 ### 2. Create and Configure the `.env` File
 Create a `.env` file in the root directory with the following variables:
 ```env
-POSTGRES_USER=your_postgres_user
-POSTGRES_PASSWORD=your_postgres_password
+DEBUG=True/FAlse
+SECRET_KEY=Django Key
 POSTGRES_DB=your_postgres_db
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-SECRET_KEY=your_django_secret_key
-DEBUG=True
-REDIS_URL=redis://redis:6379/0
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+DB_HOST=host
+DB_PORT=223
+EMAIL_HOST_USER=google
+EMAIL_HOST_PASSWORD=google
 ```
 
-### 3. Build and Start Containers
+### 3. **Edit the `hosts` file**
+
+- Locate and open the `hosts` file:
+   - **Linux/macOS**: `/etc/hosts`
+   - **Windows**: `C:\Windows\System32\drivers\etc\hosts`
+   - Add the following line to the file:
+     ```
+     127.0.0.1    www.testtask.com testtask.com
+     ```
+
+**Save the changes**
+
+- On Linux/macOS, you might need to use `sudo` to edit the file:
+  ```bash
+  sudo nano /etc/hosts
+  ```
+- On Windows, ensure that the text editor is run as an administrator.
+
+### 4. Build and Start Containers
 Run the following commands:
 ```bash
 docker-compose up --build -d
 ```
 
-### 4. Verify the Setup
-- Access the application: [http://localhost:8000](http://localhost:8000)
-- Static files: [http://localhost/static/](http://localhost/static/)
-- Media files: [http://localhost/media/](http://localhost/media/)
+### 5. Verify the Setup
+
+- Access the application: [http://testtask.com](http://testtask.com)
+- Static files: [http://testtask.com/static/](http://testtask.com/static/)
+- Media files: [http://testtask.com/media/](http://testtask.com/media/)
 
 ---
 

@@ -32,8 +32,10 @@ services:
 
   web:
     build: .
-    command: [ "./wait-for-it.sh", "db:5432", "--",
-               "uwsgi", "--ini", "/code/config/uwsgi/uwsgi.ini" ]
+    command: >
+      sh -c "python testtask/manage.py migrate &&
+             python testtask/manage.py collectstatic --noinput &&
+             ./wait-for-it.sh db:5432 -- uwsgi --ini /code/config/uwsgi/uwsgi.ini"
     restart: always
     volumes:
       - .:/code
