@@ -34,6 +34,7 @@ services:
     build: .
     command: >
       sh -c "python testtask/manage.py makemigrations &&
+      sh -c "python testtask/manage.py makemigrations comment &&
              python testtask/manage.py migrate &&
              python testtask/manage.py collectstatic --noinput &&
              ./wait-for-it.sh db:5432 -- uwsgi --ini /code/config/uwsgi/uwsgi.ini"
