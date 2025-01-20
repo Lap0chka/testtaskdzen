@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from graphene import Field, Mutation, ObjectType, String
+from graphene import Field, Mutation, ObjectType, Schema, String
 
 from geoip.utils import get_user_stat, save_user_stat
 
@@ -10,10 +10,10 @@ class UserStatType(ObjectType):  # type: ignore
     GraphQL type representing user statistics.
     """
 
-    ip_address: Optional[str] = String()
-    country: Optional[str] = String()
-    language: Optional[str] = String()
-    timestamp: Optional[str] = String()
+    ip_address = String()  # Удаляем Optional
+    country = String()
+    language = String()
+    timestamp = String()
 
 
 class CreateUserStat(Mutation):  # type: ignore
@@ -26,11 +26,11 @@ class CreateUserStat(Mutation):  # type: ignore
     """
 
     class Arguments:
-        ip_address: str = String(required=True)
-        language: str = String(required=True)
+        ip_address = String(required=True)  # Удаляем аннотацию типа
+        language = String(required=True)
 
-    success: Optional[str] = String()
-    user_stat: Optional[UserStatType] = Field(lambda: UserStatType)
+    success = String()
+    user_stat = Field(lambda: UserStatType)
 
     def mutate(self, info: Any, ip_address: str, language: str) -> "CreateUserStat":
         """
@@ -59,7 +59,7 @@ class Query(ObjectType):  # type: ignore
     Query for retrieving user statistics.
     """
 
-    user_stat: Optional[UserStatType] = Field(
+    user_stat = Field(
         UserStatType,
         ip_address=String(required=True),
         description="Retrieve user statistics by IP address.",
@@ -91,4 +91,7 @@ class RootMutation(ObjectType):  # type: ignore
     Root mutation for the schema.
     """
 
-    create_user_stat: Field = CreateUserStat.Field()
+    create_user_stat = CreateUserStat.Field()
+
+
+schema = Schema(query=Query, mutation=RootMutation)

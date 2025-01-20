@@ -33,7 +33,7 @@ class CommentAdmin(admin.ModelAdmin):  # type: ignore
 
     text_snippet.short_description = "Comment Snippet"  # type: ignore
 
-    @admin.action(description="Approve selected comments")  # type: ignore
+    @admin.action(description="Approve selected comments")
     def approve_comments(self, request: HttpRequest, queryset: QuerySet[Comment]) -> None:
         """
         Custom action to mark selected comments as approved.

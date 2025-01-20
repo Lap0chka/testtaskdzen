@@ -8,7 +8,7 @@ class ApprovedManager(models.Manager):  # type: ignore
     Custom manager to retrieve only approved objects.
     """
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> QuerySet:  # type: ignore
         """
         Overrides the default QuerySet to return only approved objects.
 
@@ -21,16 +21,16 @@ class ApprovedManager(models.Manager):  # type: ignore
         return super().get_queryset().filter(is_approved=True)
 
 
-class Comment(models.Model):  # type: ignore
+class Comment(models.Model):
     """
     Model representing a comment with optional file attachments and nested replies.
     """
 
     username = models.CharField(
         max_length=100, help_text="The name of the user who posted the comment."
-    )
-    email = models.EmailField(max_length=100, help_text="The email address of the user.")
-    text = models.TextField(help_text="The content of the comment.")
+    )  # type: ignore
+    email = models.EmailField(max_length=100, help_text="The email address of the user.")  # type: ignore
+    text = models.TextField(help_text="The content of the comment.")  # type: ignore
     file = models.FileField(
         upload_to="comments/",
         validators=[FileExtensionValidator(allowed_extensions=["txt", "jpg", "png", "gif"])],
@@ -40,10 +40,10 @@ class Comment(models.Model):  # type: ignore
     )
     created = models.DateTimeField(
         auto_now_add=True, help_text="The timestamp when the comment was created."
-    )
+    )  # type: ignore
     updated = models.DateTimeField(
         auto_now=True, help_text="The timestamp when the comment was last updated."
-    )
+    )  # type: ignore
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
@@ -51,10 +51,10 @@ class Comment(models.Model):  # type: ignore
         blank=True,
         related_name="replies",
         help_text="The parent comment for nested replies.",
-    )
+    )  # type: ignore
     is_approved = models.BooleanField(
         default=False, help_text="Indicates whether the comment is approved."
-    )
+    )  # type: ignore
 
     # Default and custom managers
     objects = models.Manager()

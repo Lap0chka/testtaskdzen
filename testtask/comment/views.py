@@ -2,7 +2,7 @@ import logging
 from typing import Any, Dict, Union
 
 from django.contrib import messages
-from django.db.models import QuerySet
+from django.db.models import Model, QuerySet
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -30,7 +30,7 @@ class CommentListView(ListView):  # type: ignore
     context_object_name = "comments"
     paginate_by = 25
 
-    def get_queryset(self) -> Union[QuerySet[Comment], QuerySet[None]]:
+    def get_queryset(self) -> Union[QuerySet[Comment], QuerySet[Model]]:
         """
         Fetches the queryset of approved parent comments with prefetching for replies.
 
@@ -117,13 +117,13 @@ class CommentListView(ListView):  # type: ignore
             logger.warning("Invalid form submission: %s", form.errors)
             # Display error messages if the form is invalid
             for error in form.errors.values():
-                messages.error(request, error)
+                messages.error(request, error)  # type: ignore
 
         # Redirect to the same page to display updated comments
         return redirect(reverse("index"))
 
 
-@csrf_exempt  # type: ignore
+@csrf_exempt
 def preview_message(request: HttpRequest) -> HttpResponse:
     """
     Handles the preview of a comment message.

@@ -34,7 +34,7 @@ class UserStatsMiddleware:
             ip = self.get_client_ip(request)
             if ip:
                 # Attach IP address to the request object
-                request.ip_address = ip
+                request.ip_address = ip  # type: ignore
 
                 # Get the user's preferred language
                 language = request.headers.get("Accept-Language", "Unknown").split(",")[0]
@@ -46,8 +46,8 @@ class UserStatsMiddleware:
             print(f"Error in UserStatsMiddleware: {e}")
 
         # Pass the request to the next middleware or view
-        response = self.get_response(request)
-        return response
+        response = self.get_response(request)  # type: ignore
+        return response  # type: ignore
 
     @staticmethod
     def get_client_ip(request: HttpRequest) -> Optional[str]:

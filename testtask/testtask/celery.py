@@ -1,7 +1,8 @@
 import os
 
 from celery import Celery
-CELERY_IMPORTS = ('comment.task',)
+
+CELERY_IMPORTS = ("comment.task",)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "testtask.settings")
 app = Celery("testtask")

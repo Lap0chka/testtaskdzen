@@ -5,3 +5,5 @@ line-length = 100
 strict = true
 ignore_missing_imports = true
 exclude = "^comment/migrations/.*$"
+[mypy.plugins.django-stubs]
+django_settings_module = "testtask.settings"

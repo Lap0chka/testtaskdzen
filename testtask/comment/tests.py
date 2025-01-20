@@ -7,7 +7,7 @@ from .form import CommentForm
 from .models import Comment
 
 
-class IndexViewTests(TestCase):  # type: ignore
+class IndexViewTests(TestCase):
     def setUp(self) -> None:
         """
         Set up test environment with a client, URL, and a parent comment.
@@ -45,7 +45,7 @@ class IndexViewTests(TestCase):  # type: ignore
             "username": "tester2",
             "email": "tester2@gmail.com",
             "text": "New comment text",
-            "parent": self.parent_comment.id,
+            "parent": self.parent_comment.id,  # type: ignore
             "captcha_0": captcha_key,
             "captcha_1": captcha_value,
         }
@@ -93,7 +93,7 @@ class IndexViewTests(TestCase):  # type: ignore
             "username": "tester2",
             "email": "tester2@gmail.com",
             "text": "Reply to parent",
-            "parent": self.parent_comment.id,
+            "parent": self.parent_comment.id,  # type: ignore
             "captcha_0": captcha_key,
             "captcha_1": captcha_value,
         }
