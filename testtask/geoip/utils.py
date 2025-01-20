@@ -6,7 +6,7 @@ from django.utils.timezone import now
 from geoip2.database import Reader
 
 # Initialize Redis client
-redis_client = redis.StrictRedis(host="localhost", port=6379, db=0)
+redis_client = redis.StrictRedis(host="testtask-redis", port=6379, db=0)
 
 
 def get_country_from_ip(ip: str) -> str:

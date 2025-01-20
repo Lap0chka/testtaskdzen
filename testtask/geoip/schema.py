@@ -10,7 +10,7 @@ class UserStatType(ObjectType):  # type: ignore
     GraphQL type representing user statistics.
     """
 
-    ip_address = String()  # Удаляем Optional
+    ip_address = String()
     country = String()
     language = String()
     timestamp = String()
