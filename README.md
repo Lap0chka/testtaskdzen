@@ -1,6 +1,6 @@
 # README for Dockerized Application
 
-This README provides a comprehensive guide to set up and run your application, which includes services for Django, PostgreSQL, Redis, Celery, and NGINX, all orchestrated using Docker Compose.
+This README provides a comprehensive guide to set up and run your application, which includes services for Django, PostgreSQL, Redis, Celery, RabbitMQ, and NGINX, all orchestrated using Docker Compose.
 
 ---
 
@@ -24,7 +24,8 @@ This project is a web application built with Django using the following technolo
 - **PostgreSQL**: Database for storing structured data.
 - **Django ORM & DRF**: Backend framework and API tools.
 - **Celery**: For asynchronous task processing.
-- **Redis**: Message broker and caching layer.
+- **Redis**: Caching layer and DB.
+- **RabbitMQ,**: Message broker.
 - **JWT**: For secure authentication.
 - **GraphQL**: Alternative to REST API for data querying.
 - **NGINX**: As a reverse proxy and static/media file server.
@@ -48,11 +49,10 @@ Make sure you have the following installed:
 ## Folder Structure
 
 ```plaintext
-project/
+testtaskdzen/
 ├── testtask/          # Django application
 ├── nginx/             # NGINX configuration
-│   └── nginx.conf
-├── tests/             # Unit and integration tests
+│   └── nginx.conf           
 ├── .env               # Environment variables
 ├── docker-compose.yml # Docker Compose configuration
 ```
@@ -112,11 +112,14 @@ docker-compose up --build -d
 
 ### 3. **Redis**
 - **Image**: `redis:7.2.3-alpine`.
-- Used for Celery task queue and caching.
+- Used for caching and DB.
+
+### 4. **RabbitMQ**
+- Used for Celery task queue.
 
 ### 4. **Celery**
 - Processes asynchronous tasks and periodic jobs.
-- Uses Redis as a message broker.
+- Uses RabbitMQ as a message broker.
 
 ### 5. **NGINX**
 - Serves as a reverse proxy for the Django application.
