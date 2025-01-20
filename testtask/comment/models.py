@@ -38,9 +38,12 @@ class Comment(models.Model):
         blank=True,
         help_text="Optional file attachment. Allowed formats: txt, jpg, png, gif.",
     )
+    user_ip = models.TextField(
+        max_length=100, null=True, blank=True, help_text="The IP address of the user.")
     created = models.DateTimeField(
         auto_now_add=True, help_text="The timestamp when the comment was created."
     )  # type: ignore
+
     updated = models.DateTimeField(
         auto_now=True, help_text="The timestamp when the comment was last updated."
     )  # type: ignore

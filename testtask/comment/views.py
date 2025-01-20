@@ -11,6 +11,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.list import ListView
 
+from geoip.middleware import UserStatsMiddleware
 from .form import CommentForm
 from .models import Comment
 from .task import send_comment_notification
@@ -93,6 +94,7 @@ class CommentListView(ListView):  # type: ignore
                 comment.is_approved = True  # Automatically approve the comment (if required)
                 cleaned_content = clean_html(form.cleaned_data["text"])
                 comment.text = cleaned_content
+                comment.user_ip = UserStatsMiddleware.get_client_ip(request)
                 # Handle parent comment linking
                 parent_id = form.cleaned_data.get("parent")
                 if parent_id:
