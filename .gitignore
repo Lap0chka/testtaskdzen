@@ -101,9 +101,7 @@ celerybeat-schedule.*
 .migrations
 .migrations/
 # Environments
-.env
 .venv
-env/
 venv/
 ENV/
 env.bak/
@@ -223,12 +221,11 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-.env
 
 # virtualenv
 .venv
 venv/
-ENV/
+
 .vscode
 # Spyder project settings
 .spyderproject
@@ -248,6 +245,6 @@ media/
 *.db
 *.pid
 migrations/
-.env
+
 
 data/

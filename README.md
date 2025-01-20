@@ -63,25 +63,11 @@ project/
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository_url>
-cd project
+git clone https://github.com/Lap0chka/testtaskdzen.git
+cd testtaskdzen
 ```
 
-### 2. Create and Configure the `.env` File
-Create a `.env` file in the root directory with the following variables:
-```env
-DEBUG=True/FAlse
-SECRET_KEY=Django Key
-POSTGRES_DB=your_postgres_db
-POSTGRES_USER=user
-POSTGRES_PASSWORD=password
-DB_HOST=host
-DB_PORT=223
-EMAIL_HOST_USER=google
-EMAIL_HOST_PASSWORD=google
-```
-
-### 3. **Edit the `hosts` file**
+### 2. **Edit the `hosts` file**
 
 - Locate and open the `hosts` file:
    - **Linux/macOS**: `/etc/hosts`
@@ -99,13 +85,13 @@ EMAIL_HOST_PASSWORD=google
   ```
 - On Windows, ensure that the text editor is run as an administrator.
 
-### 4. Build and Start Containers
+### 3. Build and Start Containers
 Run the following commands:
 ```bash
 docker-compose up --build -d
 ```
 
-### 5. Verify the Setup
+### 4. Verify the Setup
 
 - Access the application: [http://testtask.com](http://testtask.com)
 - Static files: [http://testtask.com/static/](http://testtask.com/static/)
@@ -135,21 +121,6 @@ docker-compose up --build -d
 ### 5. **NGINX**
 - Serves as a reverse proxy for the Django application.
 - Serves static and media files.
-
----
-
-## Environment Variables
-
-| Variable               | Description                          |
-|------------------------|--------------------------------------|
-| `POSTGRES_USER`        | PostgreSQL username                 |
-| `POSTGRES_PASSWORD`    | PostgreSQL password                 |
-| `POSTGRES_DB`          | PostgreSQL database name            |
-| `POSTGRES_HOST`        | PostgreSQL host (default: `db`)     |
-| `POSTGRES_PORT`        | PostgreSQL port (default: `5432`)   |
-| `SECRET_KEY`           | Django secret key                   |
-| `DEBUG`                | Django debug mode (`True` or `False`) |
-| `REDIS_URL`            | Redis URL for Celery and caching    |
 
 ---
 
